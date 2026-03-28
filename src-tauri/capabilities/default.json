@@ -1,0 +1,23 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Capability for the main window",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "opener:default",
+    "shell:default",
+    "shell:allow-spawn",
+    "allow-sidecars",
+    "shell:allow-open",
+    "core:window:allow-start-dragging",
+    "core:window:allow-start-resize-dragging",
+    "core:window:allow-close",
+    "core:window:allow-minimize",
+    "allow-db-commands",
+    "allow-chat-commands",
+    "allow-focus-commands",
+    "allow-memory-commands",
+    "allow-system-monitor"
+  ]
+}

@@ -1,0 +1,26 @@
+# Node.js
+node_modules/
+dist/
+/build
+/.svelte-kit
+/package
+.env
+.env.*
+vite.config.ts.timestamp-*
+
+# Rust / Tauri
+/src-tauri/target/
+
+# WORKMAITE SPECIAL: Ignore large binary files & models
+/src-tauri/models/*.gguf
+/src-tauri/models/*.bin
+/src-tauri/binaries/
+
+# Databases & Snapshots
+*.db
+/state_snapshot.json
+
+# Local Context & Temp files
+/current_context.md
+/tmp/
+.DS_Store

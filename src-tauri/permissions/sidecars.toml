@@ -1,0 +1,12 @@
+[[permission]]
+identifier = "allow-sidecars"
+description = "Allows the app to spawn llama-server, whisper and piper sidecars"
+
+[[permission.scope.allow]]
+sidecar = "binaries/llama-server"
+
+[[permission.scope.allow]]
+sidecar = "binaries/whisper-stt"
+
+[[permission.scope.allow]]
+sidecar = "binaries/piper-tts"

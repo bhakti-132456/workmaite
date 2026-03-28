@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WorkmAIte: The Deck</title>
+    <style>
+        :root {
+            --bg: #000;
+            --fg: #0F0;
+            --border: #333;
+            --header: #111;
+            --card-bg: #050505;
+            --font-mono: 'Courier New', Courier, monospace;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--fg);
+            font-family: var(--font-mono);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .status-pulse {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #0F0;
+            box-shadow: 0 0 5px #0F0;
+            display: inline-block;
+            margin-right: 5px;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+            padding: 20px;
+            gap: 20px;
+            overflow: hidden;
+        }
+
+        .kanban-column {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            min-width: 250px;
+        }
+
+        .kanban-header {
+            background-color: var(--header);
+            border-bottom: 1px solid var(--border);
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            color: #ccc;
+        }
+
+        .kanban-tasks {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-card {
+            background-color: #0c0c0c;
+            border: 1px solid var(--border);
+            padding: 10px;
+            cursor: grab;
+            transition: border-color 0.2s;
+        }
+
+        .task-card:hover {
+            border-color: var(--fg);
+        }
+
+        .scratchpad {
+            width: 300px;
+            border-left: 1px dashed var(--border);
+            padding-left: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        textarea {
+            flex: 1;
+            background: #050505;
+            color: #888;
+            border: 1px solid var(--border);
+            padding: 10px;
+            font-family: var(--font-mono);
+            resize: none;
+            outline: none;
+        }
+
+        textarea:focus {
+            border-color: var(--fg);
+            color: var(--fg);
+        }
+
+        .add-task {
+            display: flex;
+            margin-top: 10px;
+        }
+
+        .add-task input {
+            flex: 1;
+            background: #000;
+            border: 1px solid var(--border);
+            color: #0F0;
+            padding: 5px;
+            font-family: var(--font-mono);
+        }
+
+        .add-task button {
+            background: #0F0;
+            color: #000;
+            border: none;
+            cursor: pointer;
+            padding: 0 10px;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <div>[ WORKMAITE // COMMAND_CENTER v1.0 ]</div>
+        <div style="display: flex; gap: 20px; align-items: center;">
+            <div id="app-launchers" style="display: flex; gap: 10px;">
+                <button onclick="launchApp('Resolve')" style="font-size: 10px; background: #333; color: #fff; border: 1px solid #555;">[LAUNCH_RESOLVE]</button>
+                <button onclick="launchApp('Studio One')" style="font-size: 10px; background: #333; color: #fff; border: 1px solid #555;">[LAUNCH_S1]</button>
+            </div>
+            <div>
+                <span id="pulse" class="status-pulse"></span>
+                SYS_NORMAL
+            </div>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Backlog -->
+        <div class="kanban-column" id="backlog">
+            <div class="kanban-header">BACKLOG</div>
+            <div class="kanban-tasks" id="tasks-backlog" ondrop="drop(event)" ondragover="allowDrop(event)">
+                <!-- Tasks here -->
+            </div>
+            <div class="add-task">
+                <input type="text" id="new-task-title" placeholder="New Task...">
+                <button onclick="addTask()">+</button>
+            </div>
+        </div>
+
+        <!-- Active -->
+        <div class="kanban-column" id="active">
+            <div class="kanban-header">ACTIVE</div>
+            <div class="kanban-tasks" id="tasks-active" ondrop="drop(event)" ondragover="allowDrop(event)">
+            </div>
+        </div>
+
+        <!-- Vision Chat -->
+        <div class="kanban-column" id="vision-chat" style="flex: 1.5;">
+            <div class="kanban-header">VISION_CHAT_STREAM</div>
+            <div class="kanban-tasks" id="vision-results" style="font-size: 12px; color: #aaa;">
+                <!-- Vision results here -->
+                Waiting for image input...
+            </div>
+            <div style="padding: 10px; border-top: 1px dashed #333; display: flex; flex-direction: column; gap: 10px;">
+                <input type="file" id="image-input" accept="image/*" style="font-size: 10px; color: #555;">
+                <div id="image-preview" style="max-height: 100px; display: none; text-align: center;">
+                    <img id="preview-img" src="" style="max-height: 100px; max-width: 100%; border: 1px solid #0F0;">
+                </div>
+                <div class="add-task">
+                    <input type="text" id="vision-prompt" placeholder="Analyze image...">
+                    <button onclick="analyzeImage()">SCAN</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Done -->
+        <div class="kanban-column" id="done">
+            <div class="kanban-header">DONE</div>
+            <div class="kanban-tasks" id="tasks-done" ondrop="drop(event)" ondragover="allowDrop(event)">
+            </div>
+        </div>
+
+        <!-- Scratchpad -->
+        <div class="scratchpad">
+            <div style="margin-bottom: 10px;">SCRATCHPAD_ROOT</div>
+            <textarea id="scratchpad" placeholder="Quick notes relative to vault.md..."></textarea>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

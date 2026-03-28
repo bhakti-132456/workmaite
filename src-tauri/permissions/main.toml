@@ -1,0 +1,38 @@
+[[permission]]
+identifier = "allow-db-commands"
+description = "Allows database operations"
+commands.allow = [
+    "save_message",
+    "get_messages",
+    "set_context",
+    "get_context"
+]
+
+[[permission]]
+identifier = "allow-system-monitor"
+description = "Allows system performance monitoring"
+commands.allow = [
+    "get_system_stats"
+]
+
+[[permission]]
+identifier = "allow-chat-commands"
+description = "Allows chat and LLM interactions"
+commands.allow = [
+    "send_chat"
+]
+
+[[permission]]
+identifier = "allow-focus-commands"
+description = "Allows productivity focus timers"
+commands.allow = [
+    "start_focus_session",
+    "end_focus_session"
+]
+
+[[permission]]
+identifier = "allow-memory-commands"
+description = "Allows document ingestion for RAG"
+commands.allow = [
+    "ingest_document"
+]
