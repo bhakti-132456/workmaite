@@ -1,65 +1,51 @@
-# WorkmAIte Pro (Windows Build) 🛠🚀
+# WorkmAIte Pro: Local Agentic AI for Creative Workflows
 
-WorkmAIte is a "Zero-External" AI OS layer for your computer, designed to handle tasks, creative app control, and system automation on your local hardware. No cloud, 100% privacy.
+**WorkmAIte Pro** is a 100% offline, privacy-focused productivity companion built for creatives. It integrates deeply with DaVinci Resolve and Studio One to provide AI-driven task management, pc control, and creative automation.
 
-## 🛠 Prerequisites
+## 🚀 Strategic Reorientation (2026)
+We are currently pivoting toward a "Living Loop" architecture using the **Sarvam AI Ecosystem**:
+- **Sarvam-1 (LLM)**: For localized, high-performance thinking.
+- **Bulbul v3 (TTS)**: High-quality localized speech synthesis.
+- **Sarvam Edge (STT)**: Efficient background voice listening.
+- **Proactive Agency**: The app now features "The Captain" (productivity checks) and "The Mirror" (somatic/wellness checks) via an automated background ticker.
 
-To get this project functional after cloning, your machine must have the following installed:
+## 🛠 Features
+- **The Deck**: A kanban-style Command Center for task decomposition.
+- **The Brainstem**: Local SQLite state management with vector-search RAG stubs.
+- **Zero-External Connectivity**: All models (Llama, Qwen, Sarvam) run strictly on local hardware.
+- **App Control**: Automated launching and monitoring for professional creative suites.
 
-### ⚙️ Software Core
-1. **Node.js**: (Version 20+) [Download](https://nodejs.org/)
-2. **Rust**: (Version 1.75+) [Install via Rustup](https://rustup.rs/)
-3. **Python**: (Version 3.10+) [Download](https://python.org/)
-4. **Visual Studio 2022**: Ensure you check the "Desktop development with C++" workload during installation.
+## 📦 Tech Stack
+- **Frontend**: Svelte 5 / Vite
+- **Desktop Wrapper**: Tauri V2 (Rust)
+- **AI Core**: llama-server / whisper-stt / piper-tts sidecars
+- **Database**: SQLite (via rusqlite)
 
----
-
-## 🏗 Setup: External Dependencies
-
-Since models and sidecar binaries are over 10GB, they are excluded from Git. You must populate the following folders manually:
-
-### 1. Model Files (`src-tauri/models/`)
-Place these `.gguf` files in the directory:
-- **Main Brain**: `Meta-Llama-3.1-8B-Instruct-Q4_K_M.gguf`
-- **Calculator Mode**: `Qwen2.5-Coder-0.5B-Instruct-Q8_0.gguf`
-- **Vision Scan**: `moondream2-q8.gguf` & `moondream2-mmproj.gguf`
-
-### 2. Sidecar Binaries (`src-tauri/binaries/`)
-The project expects the following Windows executables organized into isolated folders to prevent `DLL Hell` (ABI conflicts):
-
-#### **llama-server** (`/binaries/llama/`)
-- Binary: `llama-server-x86_64-pc-windows-msvc.exe`
-- Dependencies: `ggml.dll`, `llama.dll` (standard Windows build files from llama.cpp)
-
-#### **whisper-stt** (`/binaries/whisper/`)
-- Binary: `whisper-stt-x86_64-pc-windows-msvc.exe`
-- Dependencies: Ensure the Whisper-specific `ggml.dll` is in this separate folder.
+## 🏗 Setup & Installation
+1.  Initialize the project: `npm install`
+2.  Launch dev mode: `npm run tauri dev`
+3.  Binary isolated models go in `src-tauri/models/`.
 
 ---
+*Created by the Advanced Agentic Coding team at DeepMind.*
 
-## 🚀 Launching the System
+## 🤖 AI Agent Instructions
 
-Double-click the following files from the root directory:
+If you are an AI coding assistant working on this repository, please note the following architectural requirements:
 
-- **Option A (Visible)**: `WorkmAIte_PRO_Launcher.bat`
-- **Option B (Silent)**: `WorkmAIte_SILENT.vbs`
+### **1. AI Sidecar Architecture (Tauri v2)**
+- **LLM Engine**: Running on `llama-server` (port **8081**). The identifier is `binaries/llama-server`.
+- **STT Engine**: Running on `whisper-stt`. The identifier is `binaries/whisper-stt`.
+- **TTS Engine**: Running on `piper-tts`. Matches `src-tauri/binaries` directly.
+- **Model Path requirement**: Sidecars MUST be spawned using **absolute paths** to their model files (located in `src-tauri/models/`) to ensure stability across different launch environments.
 
-**Manual Start Commands:**
-```powershell
-# 1. Start the main AI Engine
-npm run tauri dev
+### **2. Directory Structure**
+- `src-tauri/binaries/`: Essential binary sidecars and their respective DLL dependencies.
+- `src-tauri/models/`: GGUF/ONNX model files (Llama-3.1 8B, Sarvam, etc.).
+- `core/` & `deck/`: Auxiliary Python services. The `workspace_root` must be correctly resolved in `lib.rs` to find these scripts.
 
-# 2. Start the State-to-Task sync
-python core/state_manager.py
+### **3. Debugging Spawning Errors**
+- If the AI Chat shows a "Connection Error", check if port **8081** is listening (`netstat -ano | findstr :8081`).
+- Sidecar logs are piped to the main Tauri console with the prefix `LLM_SIDECAR:`. Check these for model-loading failures or RAM issues.
+- Do NOT remove the `binaries/` prefix from sidecar identifiers in `tauri.conf.json`, as this is required for Tauri 2.0 sidecar resolution.
 
-# 3. Start the Command Center UI
-python deck/server.py
-```
-
-## 🔋 Hardware Targets (Optimization)
-- **RAM**: 16GB Minimum (Model allocations ~5-6GB).
-- **VRAM**: 4GB Minimum (RTX Ti/AMD Mobile compatible).
-- **Backend**: Currently using CPU (OpenBLAS/AVX2). GPU acceleration can be unlocked by updating the `--n-gpu-layers` flag in `src-tauri/src/lib.rs`.
-
----
-*Powered by Local AI & Zero-External Architecture.*
