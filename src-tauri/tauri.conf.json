@@ -13,10 +13,10 @@
     "windows": [
       {
         "title": "WorkmAIte Pro",
-        "width": 420,
-        "height": 720,
-        "transparent": true,
-        "decorations": false,
+        "width": 500,
+        "height": 850,
+        "transparent": false,
+        "decorations": true,
         "alwaysOnTop": true,
         "resizable": true,
         "minWidth": 360,
@@ -45,14 +45,15 @@
     ],
     "resources": [
       "models/*",
-      "binaries/llama/*.dll",
-      "binaries/whisper/*.dll",
-      "binaries/piper/*.dll"
+      "binaries/**/*",
+      "../core/*",
+      "../deck/*"
     ]
   },
   "plugins": {
     "shell": {
       "open": true
-    }
+    },
+    "dialog": null
   }
 }

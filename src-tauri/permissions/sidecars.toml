@@ -4,9 +4,12 @@ description = "Allows the app to spawn llama-server, whisper and piper sidecars"
 
 [[permission.scope.allow]]
 sidecar = "binaries/llama-server"
+args = true
 
 [[permission.scope.allow]]
 sidecar = "binaries/whisper-stt"
+args = true
 
 [[permission.scope.allow]]
 sidecar = "binaries/piper-tts"
+args = true
